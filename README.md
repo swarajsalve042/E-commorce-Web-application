@@ -23,5 +23,9 @@ Create a product:
 ## Test
 `mvn test`
 
+## Automated test coverage
+
+The Spring Boot integration tests use MockMvc and an in-memory H2 database to verify product creation, listing, retrieval, deletion, not-found responses, and invalid name/price validation. Run with `mvn test`.
+
 ## Scope
 Product catalogue CRUD demo only. Cart, checkout, payments, customer authentication and production database configuration are not implemented.
