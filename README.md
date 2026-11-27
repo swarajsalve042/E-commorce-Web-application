@@ -1,5 +1,7 @@
 # E-Commerce Web Application
 
+[![ci](https://github.com/swarajsalve042/E-commorce-Web-application/actions/workflows/ci.yml/badge.svg)](https://github.com/swarajsalve042/E-commorce-Web-application/actions/workflows/ci.yml)
+
 [![CI](https://github.com/swarajsalve042/E-commorce-Web-application/actions/workflows/ci.yml/badge.svg)](https://github.com/swarajsalve042/E-commorce-Web-application/actions/workflows/ci.yml)
 
 Java 17 and Spring Boot REST API for a product catalogue.
@@ -29,3 +31,9 @@ The Spring Boot integration tests use MockMvc and an in-memory H2 database to ve
 
 ## Scope
 Product catalogue CRUD demo only. Cart, checkout, payments, customer authentication and production database configuration are not implemented.
+
+## Latest automated verification (25 November 2026)
+
+- [Maven build and integration tests — successful GitHub Actions run](https://github.com/swarajsalve042/E-commorce-Web-application/actions/runs/45572937758)
+
+These links document automated checks only; they do not imply production deployment or manual end-user acceptance testing.
