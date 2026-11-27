@@ -23,10 +23,10 @@ class ProductApiIntegrationTest {
     void cleanDatabase() { repository.deleteAll(); }
 
     @Test
-    void createsListsReadsAndDeletesProduct() throws Exception {
+    void createsListsReadsUpdatesAndDeletesProduct() throws Exception {
         String created = mvc.perform(post("/api/products")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"CI Keyboard\",\"price\":1499.00}"))
+                .content("{\"name\":\"  CI Keyboard  \",\"price\":1499.00}"))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.name").value("CI Keyboard"))
             .andReturn().getResponse().getContentAsString();
@@ -42,6 +42,13 @@ class ProductApiIntegrationTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.price").value(1499.0));
 
+        mvc.perform(put("/api/products/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Updated Keyboard\",\"price\":1599.50}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value("Updated Keyboard"))
+            .andExpect(jsonPath("$.price").value(1599.5));
+
         mvc.perform(delete("/api/products/{id}", id))
             .andExpect(status().isNoContent());
 
@@ -50,7 +57,7 @@ class ProductApiIntegrationTest {
     }
 
     @Test
-    void rejectsBlankNameAndNonPositivePrice() throws Exception {
+    void rejectsInvalidProductDataOnCreateAndUpdate() throws Exception {
         mvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"name\":\"  \",\"price\":100}"))
             .andExpect(status().isBadRequest());
@@ -58,5 +65,23 @@ class ProductApiIntegrationTest {
         mvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"name\":\"Invalid Price\",\"price\":0}"))
             .andExpect(status().isBadRequest());
+
+        mvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Too Precise\",\"price\":1.239}"))
+            .andExpect(status().isBadRequest());
+
+        String created = mvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Valid\",\"price\":10.00}"))
+            .andExpect(status().isCreated())
+            .andReturn().getResponse().getContentAsString();
+        long id = mapper.readTree(created).get("id").asLong();
+
+        mvc.perform(put("/api/products/{id}", id).contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\" \",\"price\":12.00}"))
+            .andExpect(status().isBadRequest());
+
+        mvc.perform(put("/api/products/{id}", 99999).contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Missing\",\"price\":12.00}"))
+            .andExpect(status().isNotFound());
     }
 }
